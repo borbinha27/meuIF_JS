@@ -2,10 +2,10 @@ import React, { useState, useEffect } from 'react';
 import {
   View,
   StyleSheet,
-  SafeAreaView,
   ScrollView,
   Text
 } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { useAuth } from '../context/AuthContext';
 import { useApp } from '../context/AppProvider';
 import Header from '../components/common/Header';
@@ -48,12 +48,12 @@ const Authorizations = ({ onNavigate }) => {
         endDate.toISOString().split('T')[0],
         userDocument.matricula
       );
-      
+
       if (result.success && result.data) {
         // Separar entradas e saídas como no Flutter
         const entradas = result.data.filter(auth => auth.type === 'entrada') || [];
         const saidas = result.data.filter(auth => auth.type === 'saida') || [];
-        
+
         setAuthorizationData({
           entradas: entradas,
           saidas: saidas
@@ -75,7 +75,7 @@ const Authorizations = ({ onNavigate }) => {
       const weekday = weekdays[date.getDay()];
       const hours = date.getHours().toString().padStart(2, '0');
       const minutes = date.getMinutes().toString().padStart(2, '0');
-      
+
       return `${day}/${month} ${weekday}, ${hours}:${minutes}`;
     } catch {
       return dateString;
@@ -91,7 +91,7 @@ const Authorizations = ({ onNavigate }) => {
   return (
     <SafeAreaView style={styles.container}>
       <Header onBack={() => onNavigate('dashboard')} backgroundColor="#10B981" />
-      
+
       <Tab tabs={tabs} activeTab={activeTab} onTabChange={setActiveTab} />
 
       <ScrollView style={styles.content}>
@@ -114,7 +114,7 @@ const Authorizations = ({ onNavigate }) => {
         ) : (
           <View style={styles.emptyState}>
             <Text style={styles.emptyText}>
-              {activeTab === 'entradas' 
+              {activeTab === 'entradas'
                 ? 'Nenhuma autorização de entrada encontrada'
                 : 'Nenhuma autorização de saída encontrada'
               }

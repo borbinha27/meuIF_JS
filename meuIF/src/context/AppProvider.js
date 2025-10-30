@@ -15,11 +15,11 @@ export const useApp = () => {
 
 export const AppProvider = ({ children }) => {
   const { user, userDocument } = useAuth();
-  
+
   // Estados gerais da aplicação
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
-  
+
   // Estados para dados específicos
   const [cardapios, setCardapios] = useState([]);
   const [eventos, setEventos] = useState([]);
@@ -40,7 +40,7 @@ export const AppProvider = ({ children }) => {
     try {
       setLoading(true);
       const result = await ApiService.obterCardapio();
-      
+
       if (result.succeeded) {
         return { success: true, data: result.data };
       } else {
@@ -59,7 +59,7 @@ export const AppProvider = ({ children }) => {
     try {
       setLoading(true);
       const result = await ApiService.listagemDeCardapios();
-      
+
       if (result.succeeded) {
         setCardapios(result.data || []);
         return { success: true, data: result.data };
@@ -79,7 +79,7 @@ export const AppProvider = ({ children }) => {
     try {
       setLoading(true);
       const result = await ApiService.criarCardapio(itensList, vigencia);
-      
+
       if (result.succeeded) {
         // Recarregar lista de cardápios
         await listagemDeCardapios();
@@ -100,7 +100,7 @@ export const AppProvider = ({ children }) => {
     try {
       setLoading(true);
       const result = await ApiService.deletarCardapio(cardapioID);
-      
+
       if (result.succeeded) {
         // Recarregar lista de cardápios
         await listagemDeCardapios();
@@ -124,7 +124,7 @@ export const AppProvider = ({ children }) => {
     try {
       setLoading(true);
       const result = await ApiService.listagemDeEventos();
-      
+
       if (result.succeeded) {
         setEventos(result.data || []);
         return { success: true, data: result.data };
@@ -144,7 +144,7 @@ export const AppProvider = ({ children }) => {
     try {
       setLoading(true);
       const result = await ApiService.criarEventos(eventoData);
-      
+
       if (result.succeeded) {
         // Recarregar lista de eventos
         await listagemDeEventos();
@@ -165,7 +165,7 @@ export const AppProvider = ({ children }) => {
     try {
       setLoading(true);
       const result = await ApiService.atualizarEvento(eventoData);
-      
+
       if (result.succeeded) {
         // Recarregar lista de eventos
         await listagemDeEventos();
@@ -186,7 +186,7 @@ export const AppProvider = ({ children }) => {
     try {
       setLoading(true);
       const result = await ApiService.removerEvento(eventoId);
-      
+
       if (result.succeeded) {
         // Recarregar lista de eventos
         await listagemDeEventos();
@@ -210,13 +210,13 @@ export const AppProvider = ({ children }) => {
     try {
       setLoading(true);
       const mat = matricula || userDocument?.matricula;
-      
+
       if (!mat) {
         throw new Error('Matrícula não encontrada');
       }
 
       const result = await ApiService.listarAutorizacao(startDate, endDate, mat);
-      
+
       if (result.succeeded) {
         setAutorizacoes(result.data || []);
         return { success: true, data: result.data };
@@ -236,7 +236,7 @@ export const AppProvider = ({ children }) => {
     try {
       setLoading(true);
       const result = await ApiService.criarAutorizacao(autorizacaoData);
-      
+
       if (result.succeeded) {
         // Recarregar lista de autorizações
         const today = new Date().toISOString().split('T')[0];
@@ -261,7 +261,7 @@ export const AppProvider = ({ children }) => {
     try {
       setLoading(true);
       const mat = matricula || userDocument?.matricula;
-      
+
       if (!mat) {
         throw new Error('Matrícula não encontrada');
       }
@@ -271,7 +271,7 @@ export const AppProvider = ({ children }) => {
         startDate,
         endDate,
       });
-      
+
       if (result.succeeded) {
         setEntradas(result.data || []);
         return { success: true, data: result.data };
@@ -294,7 +294,7 @@ export const AppProvider = ({ children }) => {
     try {
       setLoading(true);
       const result = await ApiService.pegarTodos();
-      
+
       if (result.succeeded) {
         return { success: true, data: result.data };
       } else {
@@ -313,7 +313,7 @@ export const AppProvider = ({ children }) => {
     try {
       setLoading(true);
       const result = await ApiService.buscarAluno(matricula);
-      
+
       if (result.succeeded) {
         return { success: true, data: result.data };
       } else {
@@ -332,7 +332,7 @@ export const AppProvider = ({ children }) => {
     try {
       setLoading(true);
       const result = await ApiService.adicionarAluno(alunoData);
-      
+
       if (result.succeeded) {
         return { success: true, data: result.data };
       } else {
@@ -351,7 +351,7 @@ export const AppProvider = ({ children }) => {
     try {
       setLoading(true);
       const result = await ApiService.updateUser(userData);
-      
+
       if (result.succeeded) {
         return { success: true, data: result.data };
       } else {
@@ -370,7 +370,7 @@ export const AppProvider = ({ children }) => {
     try {
       setLoading(true);
       const result = await ApiService.deleteUser(matricula);
-      
+
       if (result.succeeded) {
         return { success: true, data: result.data };
       } else {
@@ -398,9 +398,9 @@ export const AppProvider = ({ children }) => {
         nome: userDocument?.nome || userDocument?.display_name,
         status: 'lost',
       };
-      
+
       const result = await FirebaseService.addToCollection('lost_items', data);
-      
+
       if (result) {
         return { success: true, data: result };
       } else {
@@ -451,38 +451,40 @@ export const AppProvider = ({ children }) => {
     eventos,
     autorizacoes,
     entradas,
-    
+
     // Métodos Cardápio (mesmos nomes do Flutter)
     obterCardapio,
     listagemDeCardapios,
     criarCardapio,
     deletarCardapio,
-    
+
     // Métodos Agenda (mesmos nomes do Flutter)
     listagemDeEventos,
     criarEventos,
     atualizarEvento,
     removerEvento,
-    
+
     // Métodos Autorizações (mesmos nomes do Flutter)
     listarAutorizacao,
     criarAutorizacao,
-    
+
     // Métodos Entradas (mesmos nomes do Flutter)
     entradas: obterEntradas,
-    
+
     // Métodos Users (mesmos nomes do Flutter)
     pegarTodos,
     buscarAluno,
     adicionarAluno,
     updateUser,
     deleteUser,
-    
+
     // Métodos Achados e Perdidos (Firebase)
     addLostItem,
     getLostItems,
     getUserLostItems,
-    
+    criarAchado: addLostItem, // Alias para compatibilidade
+    listarAchados: getLostItems, // Alias para compatibilidade
+
     // Utility
     clearError: () => setError(null),
   };

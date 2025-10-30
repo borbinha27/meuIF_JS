@@ -1,12 +1,12 @@
 import React from 'react';
-import { 
-  View, 
-  Text, 
-  TouchableOpacity, 
-  StyleSheet, 
-  ScrollView,
-  SafeAreaView 
+import {
+  View,
+  Text,
+  TouchableOpacity,
+  StyleSheet,
+  ScrollView
 } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
 
 const Dashboard = ({ onNavigate }) => {
@@ -73,7 +73,7 @@ const Dashboard = ({ onNavigate }) => {
         <TouchableOpacity style={styles.navButton}>
           <Ionicons name="home" size={24} color="#10B981" />
         </TouchableOpacity>
-        <TouchableOpacity 
+        <TouchableOpacity
           style={styles.navButton}
           onPress={() => onNavigate('settings')}
         >

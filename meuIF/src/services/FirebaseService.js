@@ -1,17 +1,18 @@
 import { initializeApp } from 'firebase/app';
-import { 
-  getAuth, 
-  signInWithEmailAndPassword, 
+import {
+  initializeAuth,
+  getReactNativePersistence,
+  signInWithEmailAndPassword,
   createUserWithEmailAndPassword,
   signOut,
   onAuthStateChanged,
   User
 } from 'firebase/auth';
-import { 
-  getFirestore, 
-  doc, 
-  setDoc, 
-  getDoc, 
+import {
+  getFirestore,
+  doc,
+  setDoc,
+  getDoc,
   updateDoc,
   collection,
   addDoc,
@@ -22,6 +23,7 @@ import {
   deleteDoc,
   Timestamp
 } from 'firebase/firestore';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 // Configuração do Firebase - MESMA do seu Flutter
 const firebaseConfig = {
@@ -35,7 +37,12 @@ const firebaseConfig = {
 
 // Inicializar Firebase
 const app = initializeApp(firebaseConfig);
-const auth = getAuth(app);
+
+// Inicializar Auth com persistência AsyncStorage
+const auth = initializeAuth(app, {
+  persistence: getReactNativePersistence(AsyncStorage)
+});
+
 const firestore = getFirestore(app);
 
 class FirebaseService {
@@ -78,7 +85,7 @@ class FirebaseService {
   }
 
   // FIRESTORE METHODS - MESMOS DO FLUTTER
-  
+
   // Users Collection
   static async createUserDocument(user, additionalData = {}) {
     if (!user) return null;
@@ -108,7 +115,7 @@ class FirebaseService {
     try {
       const userRef = doc(firestore, 'users', uid);
       const userSnap = await getDoc(userRef);
-      
+
       if (userSnap.exists()) {
         const data = userSnap.data();
         // Converter Timestamp para Date
@@ -155,7 +162,7 @@ class FirebaseService {
       const alunosRef = collection(firestore, 'alunos');
       const q = query(alunosRef, where('matricula', '==', matricula));
       const querySnapshot = await getDocs(q);
-      
+
       if (!querySnapshot.empty) {
         const doc = querySnapshot.docs[0];
         const data = doc.data();

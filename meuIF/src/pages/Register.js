@@ -6,31 +6,66 @@ import {
   ScrollView,
   KeyboardAvoidingView,
   Platform,
-  SafeAreaView
+  Alert,
+  ActivityIndicator
 } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import Header from '../components/common/Header';
 import Logo from '../components/common/Logo';
 import Input from '../components/common/Input';
 import Button from '../components/common/Button';
+import { useAuth } from '../context/AuthContext';
 
 const Register = ({ onNavigate }) => {
   const [matricula, setMatricula] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
+  const { register } = useAuth();
+
+  const handleRegister = async () => {
+    // Validações
+    if (!matricula || !email || !password || !confirmPassword) {
+      Alert.alert('Erro', 'Preencha todos os campos');
+      return;
+    }
+
+    if (password !== confirmPassword) {
+      Alert.alert('Erro', 'As senhas não coincidem');
+      return;
+    }
+
+    if (password.length < 6) {
+      Alert.alert('Erro', 'A senha deve ter pelo menos 6 caracteres');
+      return;
+    }
+
+    setIsLoading(true);
+    const result = await register(email, password, matricula);
+    setIsLoading(false);
+
+    if (result.success) {
+      Alert.alert('Sucesso', 'Conta criada com sucesso!', [
+        { text: 'OK', onPress: () => onNavigate('dashboard') }
+      ]);
+    } else {
+      Alert.alert('Erro', result.error || 'Não foi possível criar a conta');
+    }
+  };
 
   return (
     <SafeAreaView style={styles.container}>
       <Header onBack={() => onNavigate('login')} />
-      
-      <KeyboardAvoidingView 
+
+      <KeyboardAvoidingView
         style={styles.keyboardView}
         behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
       >
         <ScrollView contentContainerStyle={styles.scrollContent}>
           <View style={styles.content}>
             <Logo />
-            
+
             <Text style={styles.title}>Crie sua conta</Text>
 
             <View style={styles.form}>
@@ -39,14 +74,14 @@ const Register = ({ onNavigate }) => {
                 value={matricula}
                 onChangeText={setMatricula}
               />
-              
+
               <Input
                 placeholder="Email"
                 value={email}
                 onChangeText={setEmail}
                 keyboardType="email-address"
               />
-              
+
               <Input
                 placeholder="Senha"
                 value={password}
@@ -54,7 +89,7 @@ const Register = ({ onNavigate }) => {
                 secureTextEntry={true}
                 showPasswordToggle={true}
               />
-              
+
               <Input
                 placeholder="Confirmar senha"
                 value={confirmPassword}
@@ -63,8 +98,8 @@ const Register = ({ onNavigate }) => {
                 showPasswordToggle={true}
               />
 
-              <Button onPress={() => onNavigate('dashboard')}>
-                Criar conta
+              <Button onPress={handleRegister} disabled={isLoading}>
+                {isLoading ? <ActivityIndicator color="white" /> : 'Criar conta'}
               </Button>
             </View>
           </View>

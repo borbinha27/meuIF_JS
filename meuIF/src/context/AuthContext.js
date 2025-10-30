@@ -23,7 +23,7 @@ export const AuthProvider = ({ children }) => {
     const unsubscribe = FirebaseService.onAuthStateChanged(async (user) => {
       setUser(user);
       setIsAuthenticated(!!user);
-      
+
       if (user) {
         // Obter token do usuário para usar na API
         try {
@@ -40,7 +40,7 @@ export const AuthProvider = ({ children }) => {
         setUserDocument(null);
         ApiService.setToken(null);
       }
-      
+
       setLoading(false);
     });
 
@@ -51,19 +51,19 @@ export const AuthProvider = ({ children }) => {
   const login = useCallback(async (email, password) => {
     try {
       setLoading(true);
-      
+
       // Login com Firebase
       const result = await FirebaseService.signInWithEmailAndPassword(email, password);
-      
+
       if (result.user) {
         // Obter token para API
         const token = await result.user.getIdToken();
         ApiService.setToken(token);
-        
+
         // Carregar documento do usuário
         const userDoc = await FirebaseService.getUserDocument(result.user.uid);
         setUserDocument(userDoc);
-        
+
         return { success: true, user: result.user };
       }
     } catch (error) {
@@ -78,53 +78,55 @@ export const AuthProvider = ({ children }) => {
   const register = useCallback(async (email, password, matricula, additionalData = {}) => {
     try {
       setLoading(true);
-      
-      // Primeiro, registrar na API
-      const apiResult = await ApiService.registrar({
-        email,
-        password,
-        matricula,
-      });
-      
-      if (apiResult.succeeded) {
-        // Criar usuário no Firebase Auth
-        const result = await FirebaseService.createUserWithEmailAndPassword(email, password);
-        
-        if (result.user) {
-          // Obter token para API
-          const token = await result.user.getIdToken();
-          ApiService.setToken(token);
-          
-          // Criar documento do usuário no Firestore
-          const userDocData = {
-            matricula,
+
+      // Criar usuário no Firebase Auth
+      const result = await FirebaseService.createUserWithEmailAndPassword(email, password);
+
+      if (result.user) {
+        // Obter token para API
+        const token = await result.user.getIdToken();
+        ApiService.setToken(token);
+
+        // Criar documento do usuário no Firestore com a matrícula
+        const userDocData = {
+          matricula,
+          email,
+          ...additionalData,
+        };
+
+        const userDoc = await FirebaseService.createUserDocument(result.user, userDocData);
+        setUserDocument(userDoc);
+
+        // Tentar registrar na API em background (não bloqueia se falhar)
+        try {
+          await ApiService.registrar({
             email,
-            ...additionalData,
-          };
-          
-          const userDoc = await FirebaseService.createUserDocument(result.user, userDocData);
-          setUserDocument(userDoc);
-          
-          // Também criar documento na collection alunos (para compatibilidade)
-          const alunoData = {
-            email,
+            password,
             matricula,
-            nome: additionalData.nome || '',
-            turma: additionalData.turma || '',
-            userType: 'aluno',
-            uid: result.user.uid,
-            display_name: result.user.displayName,
-            photo_url: result.user.photoURL,
-            phone_number: result.user.phoneNumber,
-          };
-          
-          await FirebaseService.createAlunoDocument(alunoData);
-          
-          return { success: true, user: result.user };
+          });
+        } catch (apiError) {
+          console.warn('API registration failed (non-critical):', apiError);
         }
-      } else {
-        return { success: false, error: apiResult.error || 'Erro ao registrar na API' };
+
+        // Também criar documento na collection alunos (para compatibilidade)
+        const alunoData = {
+          email,
+          matricula,
+          nome: additionalData.nome || '',
+          turma: additionalData.turma || '',
+          userType: 'aluno',
+          uid: result.user.uid,
+          display_name: result.user.displayName,
+          photo_url: result.user.photoURL,
+          phone_number: result.user.phoneNumber,
+        };
+
+        await FirebaseService.createAlunoDocument(alunoData);
+
+        return { success: true, user: result.user };
       }
+
+      return { success: false, error: 'Erro ao criar usuário' };
     } catch (error) {
       console.error('Register error:', error);
       return { success: false, error: error.message };
@@ -154,7 +156,7 @@ export const AuthProvider = ({ children }) => {
   // Atualizar documento do usuário
   const updateUserDocument = useCallback(async (updates) => {
     if (!user) return { success: false, error: 'Usuário não autenticado' };
-    
+
     try {
       const updatedDoc = await FirebaseService.updateUserDocument(user.uid, updates);
       if (updatedDoc) {
@@ -182,16 +184,16 @@ export const AuthProvider = ({ children }) => {
   // Função para sincronizar dados do usuário entre Firebase e API
   const syncUserData = useCallback(async () => {
     if (!userDocument?.matricula) return;
-    
+
     try {
       // Buscar dados atuais da API
       const apiResult = await ApiService.buscarAluno(userDocument.matricula);
-      
+
       if (apiResult.succeeded && apiResult.data) {
         // Atualizar documento local se necessário
         const apiData = apiResult.data;
         const updates = {};
-        
+
         if (apiData.nome && apiData.nome !== userDocument.nome) {
           updates.nome = apiData.nome;
         }
@@ -201,7 +203,7 @@ export const AuthProvider = ({ children }) => {
         if (apiData.email && apiData.email !== userDocument.email) {
           updates.email = apiData.email;
         }
-        
+
         if (Object.keys(updates).length > 0) {
           await updateUserDocument(updates);
         }
@@ -227,7 +229,7 @@ export const AuthProvider = ({ children }) => {
     userDocument,
     loading,
     isAuthenticated,
-    
+
     // Métodos
     login,
     register,
@@ -235,7 +237,7 @@ export const AuthProvider = ({ children }) => {
     updateUserDocument,
     getUserData,
     syncUserData,
-    
+
     // Informações derivadas
     displayName: userDocument?.display_name || userDocument?.nome || user?.displayName || user?.email || 'Usuário',
     matricula: userDocument?.matricula || '',

@@ -1,30 +1,52 @@
 import React, { useState } from 'react';
-import { 
-  View, 
-  Text, 
-  TouchableOpacity, 
-  StyleSheet, 
+import {
+  View,
+  Text,
+  TouchableOpacity,
+  StyleSheet,
   ScrollView,
   KeyboardAvoidingView,
-  Platform
+  Platform,
+  Alert,
+  ActivityIndicator
 } from 'react-native';
 import Logo from '../components/common/Logo';
 import Input from '../components/common/Input';
 import Button from '../components/common/Button';
+import { useAuth } from '../context/AuthContext';
 
 const Login = ({ onNavigate }) => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
+  const { login } = useAuth();
+
+  const handleLogin = async () => {
+    if (!email || !password) {
+      Alert.alert('Erro', 'Preencha email e senha');
+      return;
+    }
+
+    setIsLoading(true);
+    const result = await login(email, password);
+    setIsLoading(false);
+
+    if (result.success) {
+      onNavigate('dashboard');
+    } else {
+      Alert.alert('Erro', result.error || 'Não foi possível fazer login');
+    }
+  };
 
   return (
-    <KeyboardAvoidingView 
+    <KeyboardAvoidingView
       style={styles.container}
       behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
     >
       <ScrollView contentContainerStyle={styles.scrollContent}>
         <View style={styles.content}>
           <Logo />
-          
+
           <View style={styles.headerText}>
             <Text style={styles.title}>Bem vindo de volta</Text>
             <Text style={styles.subtitle}>Entre com seu email e senha</Text>
@@ -37,7 +59,7 @@ const Login = ({ onNavigate }) => {
               onChangeText={setEmail}
               keyboardType="email-address"
             />
-            
+
             <Input
               placeholder="Senha"
               value={password}
@@ -46,8 +68,8 @@ const Login = ({ onNavigate }) => {
               showPasswordToggle={true}
             />
 
-            <Button onPress={() => onNavigate('dashboard')}>
-              Entrar
+            <Button onPress={handleLogin} disabled={isLoading}>
+              {isLoading ? <ActivityIndicator color="white" /> : 'Entrar'}
             </Button>
           </View>
 
