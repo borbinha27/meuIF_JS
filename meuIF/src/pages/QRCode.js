@@ -107,24 +107,6 @@ const QRCode = ({ onNavigate }) => {
               </View>
             )}
           </View>
-
-          {/* Card Footer */}
-          <View style={styles.cardFooter}>
-            <Text style={styles.footerText}>
-              Documento válido para identificação estudantil
-            </Text>
-          </View>
-        </View>
-
-        {/* Additional Info */}
-        <View style={styles.infoBox}>
-          <Text style={styles.infoBoxTitle}>💡 Como usar</Text>
-          <Text style={styles.infoBoxText}>
-            • Apresente este QR Code na portaria{'\n'}
-            • Use para registrar entrada e saída{'\n'}
-            • Mantenha a tela com brilho adequado{'\n'}
-            • Não compartilhe seu QR Code
-          </Text>
         </View>
       </ScrollView>
     </SafeAreaView>
