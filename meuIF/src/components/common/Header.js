@@ -6,7 +6,7 @@ const Header = ({
   title, 
   onBack, 
   showBack = true, 
-  backgroundColor = '#10B981' // green-500
+  backgroundColor = '#2f9e41' // green-500
 }) => {
   return (
     <>

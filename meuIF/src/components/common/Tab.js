@@ -63,7 +63,7 @@ const styles = StyleSheet.create({
     fontWeight: '500',
   },
   activeTabText: {
-    color: '#059669', // green-600
+    color: '#2f9e41', // green-600
   },
   inactiveTabText: {
     color: '#6B7280', // gray-500

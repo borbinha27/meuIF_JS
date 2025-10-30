@@ -127,7 +127,7 @@ const LostFound = ({ onNavigate }) => {
       <Header
         title="Achados e Perdidos"
         onBack={() => onNavigate('dashboard')}
-        backgroundColor="#10B981"
+        backgroundColor="#2f9e41"
       />
 
       <Tab tabs={tabs} activeTab={activeTab} onTabChange={setActiveTab} />
@@ -249,7 +249,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: '#10B981',
+    backgroundColor: '#2f9e41',
     paddingVertical: 12,
     paddingHorizontal: 16,
     borderRadius: 8,

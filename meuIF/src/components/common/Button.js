@@ -43,7 +43,7 @@ const styles = StyleSheet.create({
     minHeight: 50,
   },
   primary: {
-    backgroundColor: '#10B981', // green-500
+    backgroundColor: '#2f9e41', // green-500
   },
   secondary: {
     backgroundColor: '#E5E7EB', // gray-200

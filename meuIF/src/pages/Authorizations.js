@@ -90,7 +90,7 @@ const Authorizations = ({ onNavigate }) => {
 
   return (
     <SafeAreaView style={styles.container}>
-      <Header onBack={() => onNavigate('dashboard')} backgroundColor="#10B981" />
+      <Header onBack={() => onNavigate('dashboard')} backgroundColor="#2f9e41" />
 
       <Tab tabs={tabs} activeTab={activeTab} onTabChange={setActiveTab} />
 

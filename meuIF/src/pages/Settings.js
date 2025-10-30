@@ -44,45 +44,13 @@ const Settings = ({ onNavigate }) => {
     );
   };
 
-  const settingsOptions = [
-    {
-      icon: 'person-outline',
-      title: 'Perfil',
-      subtitle: 'Editar informações pessoais',
-      onPress: () => {}
-    },
-    {
-      icon: 'notifications-outline',
-      title: 'Notificações',
-      subtitle: 'Gerenciar notificações',
-      onPress: () => {}
-    },
-    {
-      icon: 'lock-closed-outline',
-      title: 'Privacidade',
-      subtitle: 'Configurações de privacidade',
-      onPress: () => {}
-    },
-    {
-      icon: 'help-circle-outline',
-      title: 'Ajuda',
-      subtitle: 'Central de ajuda e suporte',
-      onPress: () => {}
-    },
-    {
-      icon: 'information-circle-outline',
-      title: 'Sobre',
-      subtitle: 'Informações do aplicativo',
-      onPress: () => {}
-    }
-  ];
 
   return (
     <SafeAreaView style={styles.container}>
       <Header
         title="Configurações"
         onBack={() => onNavigate('dashboard')}
-        backgroundColor="#10B981"
+        backgroundColor="#2f9e41"
       />
 
       <ScrollView style={styles.content}>

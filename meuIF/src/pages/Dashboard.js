@@ -19,11 +19,11 @@ const Dashboard = ({ onNavigate }) => {
     {
       icon: 'person',
       label: 'Perfil',
-      onPress: () => {}
+      onPress: () => onNavigate('carteirinha')
     },
     {
-      icon: 'restaurant',
-      label: 'PNAE',
+      icon: 'calendar',
+      label: 'Frequência',
       onPress: () => {}
     },
     {
@@ -37,21 +37,15 @@ const Dashboard = ({ onNavigate }) => {
       onPress: () => onNavigate('lost-found')
     },
     {
-      icon: 'calendar',
-      label: 'Agenda',
+      icon: 'restaurant',
+      label: 'PNAE',
       onPress: () => {}
     }
   ];
 
   return (
     <SafeAreaView style={styles.container}>
-      <ScrollView style={styles.scrollView}>
-        {/* Header com nome do usuário */}
-        <View style={styles.header}>
-          <Text style={styles.userName}>[Display Name]</Text>
-          <View style={styles.placeholder}></View>
-        </View>
-
+    <ScrollView style={styles.scrollView}>
         {/* Menu Grid */}
         <View style={styles.menuGrid}>
           {menuItems.map((item, index) => (
@@ -67,11 +61,10 @@ const Dashboard = ({ onNavigate }) => {
           ))}
         </View>
       </ScrollView>
-
       {/* Bottom Navigation */}
       <View style={styles.bottomNav}>
         <TouchableOpacity style={styles.navButton}>
-          <Ionicons name="home" size={24} color="#10B981" />
+          <Ionicons name="home" size={24} color="#2f9e41" />
         </TouchableOpacity>
         <TouchableOpacity
           style={styles.navButton}
